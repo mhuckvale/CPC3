@@ -14,7 +14,7 @@ print(summary(dm))
 dw=aggregate(cbind(HIT,LOGWFREQ,PCOUNT,SCOUNT,NCOUNT)~WORD,data=df,FUN=mean);
 print(summary(dw))
 
-feats=c("STOI","RMSE","CORR","SEVERITY")
+feats=c("STOI","RMSE","CORR")
 
 for (f in feats) {
 	cat(sprintf("=================================== %s\n",f));
@@ -30,8 +30,8 @@ feats=c("LOGTRIPROB","PWPOS","NWORD")
 for (f in feats) {
 	cat(sprintf("=================================== %s\n",f));
 	flush.console();
-	corr=cor(dm$HIT,dw[,f])
-	mi=cmi.pw(dm$HIT,dw[,f]);
+	corr=cor(dm$HIT,dm[,f])
+	mi=cmi.pw(dm$HIT,dm[,f]);
 	cat(sprintf("%s: r=%.3f bcmi=%.3f\n",f,corr,mi$bcmi));
 }
 
