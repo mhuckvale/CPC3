@@ -7,25 +7,38 @@ library("mpmi");
 df=read.csv("allscores_word.csv");
 print(summary(df))
 #
-
-dw=aggregate(cbind(HIT,LOGTRIPROB,LOGWFREQ,PWPOS,PCOUNT,SCOUNT,NCOUNT,NWORD)~WORD,data=df,FUN=mean);
+# average over repeats of word in scene
+dm=aggregate(cbind(HIT,LOGTRIPROB,PWPOS,NWORD)~SCENEWORD,data=df,FUN=mean);
+print(summary(dm))
+# average over word
+dw=aggregate(cbind(HIT,LOGWFREQ,PCOUNT,SCOUNT,NCOUNT)~WORD,data=df,FUN=mean);
 print(summary(dw))
 
-feats=c("STOI","RMSE","CORR")
+feats=c("STOI","RMSE","CORR","SEVERITY")
 
 for (f in feats) {
-	cat(sprintf("\n=================================== %s\n",f));
+	cat(sprintf("=================================== %s\n",f));
 	flush.console();
-	subset=seq(1,nrow(df),5)			# too many rows otherwise
+	subset=seq(1,nrow(df),10);
 	corr=cor(df$HIT[subset],df[subset,f])
 	mi=cmi.pw(df$HIT[subset],df[subset,f]);
 	cat(sprintf("%s: r=%.3f bcmi=%.3f\n",f,corr,mi$bcmi));
 }
 
-feats=c("LOGTRIPROB","LOGWFREQ","PWPOS","PCOUNT","SCOUNT","NCOUNT","NWORD")
+feats=c("LOGTRIPROB","PWPOS","NWORD")
 
 for (f in feats) {
-	cat(sprintf("\n=================================== %s\n",f));
+	cat(sprintf("=================================== %s\n",f));
+	flush.console();
+	corr=cor(dm$HIT,dw[,f])
+	mi=cmi.pw(dm$HIT,dw[,f]);
+	cat(sprintf("%s: r=%.3f bcmi=%.3f\n",f,corr,mi$bcmi));
+}
+
+feats=c("LOGWFREQ","PCOUNT","SCOUNT","NCOUNT")
+
+for (f in feats) {
+	cat(sprintf("=================================== %s\n",f));
 	flush.console();
 	corr=cor(dw$HIT,dw[,f])
 	mi=cmi.pw(dw$HIT,dw[,f]);
