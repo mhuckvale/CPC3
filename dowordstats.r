@@ -1,0 +1,32 @@
+# compute word feature correlation and mutual information with hits
+#
+# MPMI computes mutual information
+library("mpmi");
+#
+# load word data
+df=read.csv("allscores_word.csv");
+print(summary(df))
+#
+
+dw=aggregate(cbind(HIT,LOGTRIPROB,LOGWFREQ,PWPOS,PCOUNT,SCOUNT,NCOUNT,NWORD)~WORD,data=df,FUN=mean);
+print(summary(dw))
+
+feats=c("STOI","RMSE","CORR","SEVERITY")
+
+for (f in feats) {
+	cat(sprintf("\n=================================== %s\n",f));
+	flush.console();
+	corr=cor(df$HIT,df[,f])
+	mi=cmi.pw(df$HIT,df[,f]);
+	cat(sprintf("%s: r=%.3f bcmi=%.3f\n",f,corr,mi$bcmi));
+}
+
+feats=c("LOGTRIPROB","LOGWFREQ","PWPOS","PCOUNT","SCOUNT","NCOUNT","NWORD")
+
+for (f in feats) {
+	cat(sprintf("\n=================================== %s\n",f));
+	flush.console();
+	corr=cor(dw$HIT,dw[,f])
+	mi=cmi.pw(dw$HIT,dw[,f]);
+	cat(sprintf("%s: r=%.3f bcmi=%.3f\n",f,corr,mi$bcmi));
+}
