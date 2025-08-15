@@ -9,6 +9,6 @@ R scripts for calculating statistics described in paper "Word-level Intelligibil
 - dowordstats - computes correlation and mutual information for the word features against word correct
 - doword2sent - sentence intelligibility model from individual word correct predictions
 
-  Mark Huckvale
-  August 2025
+Mark Huckvale
+August 2025
   
